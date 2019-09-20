@@ -2,10 +2,12 @@
 
 const vertex_shader=`
 #include "../shaders/frag.fg"
-`
+`;
+const frag_shader=`
+#include "../shaders/vertex.vt"
+`;
 
 function main() {
-  console.log(vertex_shader)
   // Get A WebGL context
   var canvas = document.getElementById("mainCanvas");
   var gl = canvas.getContext("webgl");
@@ -14,8 +16,8 @@ function main() {
   }
 
   // Get the strings for our GLSL shaders
-  var vertexShaderSource   = document.getElementById("vertexShader").textContent;
-  var fragmentShaderSource = document.getElementById("fragShader").text;
+  var vertexShaderSource   = vertex_shader;
+  var fragmentShaderSource = frag_shader;
   console.log(vertexShaderSource);
   // create GLSL shaders, upload the GLSL source, compile the shaders
   var vertexShader   = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
@@ -43,7 +45,7 @@ function main() {
   // code above this line is initialization code.
   // code below this line is rendering code.
 
-  webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+  //webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
   // Tell WebGL how to convert from clip space to pixels
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
