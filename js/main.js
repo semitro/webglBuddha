@@ -98,8 +98,9 @@ function main() {
     gl.uniformMatrix4fv(modelViewMatrixUniform, false, modelViewMatrix);
 
     gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0); // run frag shader for each vert
+    window.requestAnimationFrame(mainLoop);
   }
-  setInterval(mainLoop, 0);
+  window.requestAnimationFrame(mainLoop);
   // drawing
 }
 
