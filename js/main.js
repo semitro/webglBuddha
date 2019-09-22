@@ -6,30 +6,37 @@ const frag_shader = `
 #include "../shaders/frag.fg"
 `;
 
-function main() {
-  // Get A WebGL context
-  var canvas = document.getElementById("mainCanvas");
-  var gl = canvas.getContext("webgl");
 
-  // create GLSL shaders, upload the GLSL source, compile the shaders
-  const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, frag_shader);
-  const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertex_shader);
-
-  // Link the two shaders into a program
-  const program = createProgram(gl, vertexShader, fragmentShader);
-  // look up where the vertex data needs to go.
-
-  //webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-
-  // Tell WebGL how to convert from clip space to pixels
+function init_gl(vertex_shader_src, frag_shader_src) {
+  const canvas = document.getElementById("mainCanvas");
+  const gl = canvas.getContext("webgl");
+  // final projection "window" size
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-  // Clear the canvas
-  gl.clearColor(0, 0, 0, 0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
+  const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, frag_shader_src);
+  const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertex_shader_src);
+  const program = createProgram(gl, vertexShader, fragmentShader);
+  gl.useProgram(program);
+  return {
+    program: program,
+    gl: gl,
+    attribLocations: {
+      vertexPos: gl.getAttribLocation(program, 'aVertexPosition'),
+      vertexColor: gl.getAttribLocation(program, 'aVertexColor'),
+    },
+    uniformLocations: {
+      projectionMatrix: gl.getUniformLocation(program, 'uProjectionMatrix'),
+      modelViewMatrix: gl.getUniformLocation(program, 'uModelViewMatrix'),
+    },
+  };
+}
+
+function main() {
+
+  const program_info = init_gl(vertex_shader, frag_shader);
+  const gl = program_info.gl;
 
   // Tell it to use our program (pair of shaders)
-  gl.useProgram(program);
 
   const object = getObject()[0];
   const objectIndicies = getObject()[1];
@@ -47,8 +54,8 @@ function main() {
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(objectIndicies), gl.STATIC_DRAW)
 
-  // draw
-  gl.clearColor(0., 0., 0., 1.);
+  // drawing
+  gl.clearColor(0., 0., 0., 0.05);
   gl.clearDepth(1.0);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL); // obucre far things
@@ -63,18 +70,17 @@ function main() {
 
   const modelViewMatrix = mat4.create();
 
-  mat4.translate(modelViewMatrix, modelViewMatrix, [-0.0, 0.0, -6.0]);
-
-  mat4.rotate(modelViewMatrix, modelViewMatrix, 0.2, [0, 0, 1]);
+  mat4.translate(modelViewMatrix, modelViewMatrix, [-0.0, -1.5, -6.0]);
+  mat4.rotate(modelViewMatrix, modelViewMatrix, 0.5, [0, 1, 1]);
 
   // pos
-  const vertexPos = gl.getAttribLocation(program, 'aVertexPosition');
+  const vertexPos = program_info.attribLocations.vertexPos;
   gl.vertexAttribPointer(
     vertexPos, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vertexPos);
 
   // color
-  const vertexColor = gl.getAttribLocation(program, 'aVertexColor');
+  const vertexColor = program_info.attribLocations.vertexColor;
   gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
   gl.vertexAttribPointer(vertexColor, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vertexColor);
@@ -82,8 +88,8 @@ function main() {
   // indices
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBuffer);
   //
-  const projectionMatrixUniform =  gl.getUniformLocation(program, 'uProjectionMatrix');
-  const modelViewMatrixUniform  = gl.getUniformLocation(program, 'uModelViewMatrix');
+  const projectionMatrixUniform = program_info.uniformLocations.projectionMatrix;
+  const modelViewMatrixUniform = program_info.uniformLocations.modelViewMatrix;
   gl.uniformMatrix4fv(projectionMatrixUniform, false, projectionMatrix);
   gl.uniformMatrix4fv(modelViewMatrixUniform, false, modelViewMatrix);
 
