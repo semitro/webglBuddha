@@ -1,6 +1,6 @@
 
 const speed_of_time_factor = 0.0001; // convert sec to msec, e.g.
-const g = 5.;
+const g = 0.1;
 
 const ProcessAs = {
   GRAVITY: 1

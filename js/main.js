@@ -1,4 +1,3 @@
-
 function main() {
 
   const r = new Renderer();
@@ -9,8 +8,14 @@ function main() {
 
   var last_timestamp = Date.now();
   var deltaTime;
+  window.addEventListener("keypress", keyPressed);
 
-  function mainLoop(){
+  function keyPressed(e) {
+    console.log(e);
+  };
+
+
+  function mainLoop() {
     deltaTime = Date.now() - last_timestamp;
     last_timestamp = Date.now();
     phys.update(deltaTime);
@@ -18,8 +23,10 @@ function main() {
     r.clear_frame();
     r.render(carModel);
     r.render(cubeModel);
+
     window.requestAnimationFrame(mainLoop);
   }
+
   window.requestAnimationFrame(mainLoop);
 }
 
