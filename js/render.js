@@ -84,7 +84,7 @@ class Renderer {
 
     //var scale_factor = document.getElementById("scaleBox").value;
     // mat4.scale(viewMatrix, viewMatrix, [scale_factor, scale_factor, scale_factor]);
-    mat4.translate(viewMatrix, viewMatrix, [0, 0, -85.0]);
+    mat4.translate(viewMatrix, viewMatrix, [0, 0, -20.0]);
 //      mat4.rotate(viewMatrix, viewMatrix, time * 0.0005, [0, 1, 1]);
     // pos
     const vertexPos = program_info.attribLocations.vertexPos;
