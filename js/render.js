@@ -1,3 +1,9 @@
+/**
+* such strange syntax (#include) is possible because I use gcc -E before
+ * passing js files to the server.
+ * @see deploy.sh
+ * Don't forget that there shouldn't be spaces before #include macro
+ */
 const vertex_shader = `
 #include "../shaders/vertex.vt"
 `;

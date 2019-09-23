@@ -1,4 +1,6 @@
-
+/**
+* Bulk of 3D-models used in our game
+**/
 class Model {
 
 };
