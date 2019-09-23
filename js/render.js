@@ -26,19 +26,20 @@ class Renderer {
       },
       uniformLocations: {
         projectionMatrix: gl.getUniformLocation(program, 'uProjectionMatrix'),
-        modelViewMatrix: gl.getUniformLocation(program, 'uModelViewMatrix'),
+        viewMatrix: gl.getUniformLocation(program, 'uViewMatrix'),
+        modelMatrix: gl.getUniformLocation(program, 'uModelMatrix'),
       },
     };
   }
 
-  constructor(){
+  constructor() {
     this.program_info = this.init_gl(vertex_shader, frag_shader);
     const gl = this.program_info.gl;
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL); // obucre far things
   }
 
-  clear_frame(){
+  clear_frame() {
     const gl = this.program_info.gl;
     gl.clearColor(0., 0., 0., 0.05);
     gl.clearDepth(1.0);
@@ -67,45 +68,49 @@ class Renderer {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelIndices), gl.STATIC_DRAW)
 
- //   var time = Date.now();
+    //   var time = Date.now();
 
 //      const dt = Date.now() - time;
-  //    time += dt;
+    //    time += dt;
 
-      const fieldOfView = 45 * Math.PI / 180;
-      const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-      const zNear = 0.01;
-      const zFar = 1000.0;
-      const projectionMatrix = mat4.create();
-      mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+    const fieldOfView = 45 * Math.PI / 180;
+    const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+    const zNear = 0.01;
+    const zFar = 1000.0;
+    const projectionMatrix = mat4.create();
+    mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
-      const modelViewMatrix = mat4.create();
+    const viewMatrix = mat4.create();
 
-      //var scale_factor = document.getElementById("scaleBox").value;
-      // mat4.scale(modelViewMatrix, modelViewMatrix, [scale_factor, scale_factor, scale_factor]);
-      mat4.translate(modelViewMatrix, modelViewMatrix, [0, 0, -850.0]);
-//      mat4.rotate(modelViewMatrix, modelViewMatrix, time * 0.0005, [0, 1, 1]);
-      // pos
-      const vertexPos = program_info.attribLocations.vertexPos;
-      gl.bindBuffer(gl.ARRAY_BUFFER, boxBuffer);
-      gl.vertexAttribPointer(
-        vertexPos, 3, gl.FLOAT, false, 0, 0);
-      gl.enableVertexAttribArray(vertexPos);
+    //var scale_factor = document.getElementById("scaleBox").value;
+    // mat4.scale(viewMatrix, viewMatrix, [scale_factor, scale_factor, scale_factor]);
+    mat4.translate(viewMatrix, viewMatrix, [0, 0, -85.0]);
+//      mat4.rotate(viewMatrix, viewMatrix, time * 0.0005, [0, 1, 1]);
+    // pos
+    const vertexPos = program_info.attribLocations.vertexPos;
+    gl.bindBuffer(gl.ARRAY_BUFFER, boxBuffer);
+    gl.vertexAttribPointer(
+      vertexPos, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vertexPos);
 
-      // color
-      // const vertexColor = program_info.attribLocations.vertexColor;
-      //gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-      //gl.vertexAttribPointer(vertexColor, 4, gl.FLOAT, false, 0, 0);
-      //gl.enableVertexAttribArray(vertexColor);
+    // color
+    // const vertexColor = program_info.attribLocations.vertexColor;
+    //gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    //gl.vertexAttribPointer(vertexColor, 4, gl.FLOAT, false, 0, 0);
+    //gl.enableVertexAttribArray(vertexColor);
 
-      // indices
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBuffer);
-      //
-      const projectionMatrixUniform = program_info.uniformLocations.projectionMatrix;
-      const modelViewMatrixUniform = program_info.uniformLocations.modelViewMatrix;
-      gl.uniformMatrix4fv(projectionMatrixUniform, false, projectionMatrix);
-      gl.uniformMatrix4fv(modelViewMatrixUniform, false, modelViewMatrix);
-      gl.drawElements(gl.TRIANGLES, modelIndices.length, gl.UNSIGNED_SHORT, 0); // run frag shader for each vert
-    }
+    // indices
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBuffer);
+    //
+    const modelMatrixUniform = program_info.uniformLocations.modelMatrix;
+    const viewMatrixUniform = program_info.uniformLocations.viewMatrix;
+    const projectionMatrixUniform = program_info.uniformLocations.projectionMatrix;
+
+    gl.uniformMatrix4fv(modelMatrixUniform, false, model.modelMatrix);
+    gl.uniformMatrix4fv(viewMatrixUniform, false, viewMatrix);
+    gl.uniformMatrix4fv(projectionMatrixUniform, false, projectionMatrix);
+
+    gl.drawElements(gl.TRIANGLES, modelIndices.length, gl.UNSIGNED_SHORT, 0); // run frag shader for each vert
+  }
 }
 
