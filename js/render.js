@@ -1,5 +1,5 @@
 /**
-* such strange syntax (#include) is possible because I use gcc -E before
+ * such strange syntax (#include) is possible because I use gcc -E before
  * passing js files to the server.
  * @see deploy.sh
  * Don't forget that there shouldn't be spaces before #include macro
@@ -29,6 +29,7 @@ class Renderer {
       attribLocations: {
         vertexPos: gl.getAttribLocation(program, 'aVertexPosition'),
         vertexColor: gl.getAttribLocation(program, 'aVertexColor'),
+        textureCoord: gl.getAttribLocation(program, 'aTextureCoord')
       },
       uniformLocations: {
         projectionMatrix: gl.getUniformLocation(program, 'uProjectionMatrix'),
@@ -57,28 +58,7 @@ class Renderer {
     const program_info = this.program_info;
     const gl = program_info.gl;
 
-// Tell it to use our program (pair of shaders)
-    const modelVertexes = model.vertexes;
-    const modelIndices = model.indices;
-    // const objectColors = getObject()[2];
-
-    const boxBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, boxBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelVertexes), gl.STATIC_DRAW);
-
-//    const colorBuffer = gl.createBuffer();
-//    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-//    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(objectColors), gl.STATIC_DRAW);
-
-    const boxIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelIndices), gl.STATIC_DRAW)
-
-    //   var time = Date.now();
-
-//      const dt = Date.now() - time;
-    //    time += dt;
-
+    // calculate matrixes
     const fieldOfView = 45 * Math.PI / 180;
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.01;
@@ -88,34 +68,50 @@ class Renderer {
 
     const viewMatrix = mat4.create();
 
-    //var scale_factor = document.getElementById("scaleBox").value;
-    // mat4.scale(viewMatrix, viewMatrix, [scale_factor, scale_factor, scale_factor]);
     mat4.translate(viewMatrix, viewMatrix, [0, 0, -20.0]);
-//      mat4.rotate(viewMatrix, viewMatrix, time * 0.0005, [0, 1, 1]);
-    // pos
-    const vertexPos = program_info.attribLocations.vertexPos;
-    gl.bindBuffer(gl.ARRAY_BUFFER, boxBuffer);
-    gl.vertexAttribPointer(
-      vertexPos, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(vertexPos);
 
-    // color
-    // const vertexColor = program_info.attribLocations.vertexColor;
-    //gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    //gl.vertexAttribPointer(vertexColor, 4, gl.FLOAT, false, 0, 0);
-    //gl.enableVertexAttribArray(vertexColor);
-
-    // indices
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBuffer);
-    //
     const modelMatrixUniform = program_info.uniformLocations.modelMatrix;
     const viewMatrixUniform = program_info.uniformLocations.viewMatrix;
     const projectionMatrixUniform = program_info.uniformLocations.projectionMatrix;
-
     gl.uniformMatrix4fv(modelMatrixUniform, false, model.modelMatrix);
     gl.uniformMatrix4fv(viewMatrixUniform, false, viewMatrix);
     gl.uniformMatrix4fv(projectionMatrixUniform, false, projectionMatrix);
 
+    const modelVertexes = model.vertexes;
+    const modelIndices = model.indices;
+    const modelVTextures = model.textureCoord;
+
+    // set up vertexes positions in space
+    const modelVertexesBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexesBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelVertexes), gl.STATIC_DRAW);
+
+    const vertexPosAttr = program_info.attribLocations.vertexPos;
+    gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexesBuffer);
+    gl.vertexAttribPointer(vertexPosAttr, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vertexPosAttr);
+
+    // set up texture coordinates
+    const textureCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelVTextures), gl.STATIC_DRAW);
+
+    const textureCoordAttr = program_info.attribLocations.textureCoord;
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+    gl.vertexAttribPointer(textureCoordAttr, 2, gl.FLOAT, true, 0, 0);
+    gl.enableVertexAttribArray(textureCoordAttr);
+
+    const vertexIndicesBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelIndices), gl.STATIC_DRAW);
+
+    // texture itself
+    const texture = gl.createTexture();
+    //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+     // new Uint8Array([0, 0, 255, 255]));
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, model.image);
+    gl.generateMipmap(gl.TEXTURE_2D);
     gl.drawElements(gl.TRIANGLES, modelIndices.length, gl.UNSIGNED_SHORT, 0); // run frag shader for each vert
   }
 }

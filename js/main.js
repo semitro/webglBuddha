@@ -21,7 +21,7 @@ function main() {
     phys.update(deltaTime);
 
     r.clear_frame();
-    r.render(carModel);
+ //   r.render(carModel);
     r.render(cubeModel);
 
     window.requestAnimationFrame(mainLoop);
