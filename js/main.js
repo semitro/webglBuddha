@@ -3,6 +3,7 @@ function main() {
   const r = new Renderer();
   const carModel = new CarModel();
   const cubeModel = new CubeModel();
+  const penguinModel = new Penguin();
   const phys = new PhysEngine();
   phys.register(carModel, ProcessAs.GRAVITY);
 
@@ -22,6 +23,7 @@ function main() {
 
     r.clear_frame();
  //   r.render(carModel);
+    r.render(penguinModel);
     r.render(cubeModel);
 
     window.requestAnimationFrame(mainLoop);

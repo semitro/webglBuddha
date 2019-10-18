@@ -77,9 +77,9 @@ class Renderer {
     gl.uniformMatrix4fv(viewMatrixUniform, false, viewMatrix);
     gl.uniformMatrix4fv(projectionMatrixUniform, false, projectionMatrix);
 
-    const modelVertexes = model.vertexes;
-    const modelIndices = model.indices;
-    const modelVTextures = model.textureCoord;
+    const modelVertexes = model.resultVertex;
+    const modelIndices = model.resultIndices;
+    const modelVTextures = model.resultVTexture;
 
     // set up vertexes positions in space
     const modelVertexesBuffer = gl.createBuffer();
