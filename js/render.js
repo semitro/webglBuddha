@@ -85,7 +85,7 @@ class Renderer {
     // set up vertexes positions in space
     const modelVertexesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexesBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, model.vertexesFloatArray, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, model.vertexesFloatArray, gl.DYNAMIC_DRAW);
 
     const vertexPosAttr = program_info.attribLocations.vertexPos;
     gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexesBuffer);
@@ -95,7 +95,7 @@ class Renderer {
     // set up texture coordinates
     const textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, model.vTexturesFloatArray, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, model.vTexturesFloatArray, gl.DYNAMIC_DRAW);
 
     const textureCoordAttr = program_info.attribLocations.textureCoord;
     gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
@@ -104,7 +104,7 @@ class Renderer {
 
     const vertexIndicesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indicesIntArray, gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indicesIntArray, gl.DYNAMIC_DRAW);
 
     // texture itself
     const texture = gl.createTexture();

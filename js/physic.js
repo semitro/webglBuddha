@@ -52,6 +52,8 @@ class PhysEngine {
     if (actor.as === ProcessAs.GRAVITY) {
       actor.speed[1] -= g * dt;
     }
+    mat4.rotateX(actor.model.modelMatrix, actor.model.modelMatrix, 1.0*dt);
+    mat4.rotateX(actor.model.modelMatrix, actor.model.modelMatrix, 1.3*dt);
     var actorPos = actor.model.modelMatrix;
     mat4.translate(actorPos, actorPos, actor.speed);
   }

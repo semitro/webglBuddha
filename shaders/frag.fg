@@ -1,8 +1,9 @@
- varying lowp vec4 vColor;
- varying lowp vec2 vTexCoord;
+varying lowp vec2 vTexCoord;
 
 uniform sampler2D uTexture;
 
- void main() {
-    gl_FragColor = texture2D(uTexture, vTexCoord);
-  }
+void main() {
+ lowp vec4 ambient =  vec4(0.2, 0.2, 0.2, 1.0);
+ lowp vec4 texture_color = texture2D(uTexture, vTexCoord); // dunno that the lowp is but nothing works without it
+ gl_FragColor = max(texture_color*ambient, 0.8*texture_color);
+}
