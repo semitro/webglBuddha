@@ -30,7 +30,8 @@ class Renderer {
       attribLocations: {
         vertexPos: gl.getAttribLocation(program, 'aVertexPosition'),
         vertexColor: gl.getAttribLocation(program, 'aVertexColor'),
-        textureCoord: gl.getAttribLocation(program, 'aTextureCoord')
+        textureCoord: gl.getAttribLocation(program, 'aTextureCoord'),
+        normals: gl.getAttribLocation(program, 'aVertexNormals')
       },
       uniformLocations: {
         projectionMatrix: gl.getUniformLocation(program, 'uProjectionMatrix'),
@@ -78,9 +79,7 @@ class Renderer {
     gl.uniformMatrix4fv(viewMatrixUniform, false, viewMatrix);
     gl.uniformMatrix4fv(projectionMatrixUniform, false, projectionMatrix);
 
-    const modelVertexes = model.resultVertex;
     const modelIndices = model.resultIndices;
-    const modelVTextures = model.resultVTexture;
 
     // set up vertexes positions in space
     const modelVertexesBuffer = gl.createBuffer();
@@ -102,16 +101,26 @@ class Renderer {
     gl.vertexAttribPointer(textureCoordAttr, 2, gl.FLOAT, true, 0, 0);
     gl.enableVertexAttribArray(textureCoordAttr);
 
-    const vertexIndicesBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indicesIntArray, gl.DYNAMIC_DRAW);
-
     // texture itself
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, model.image);
     gl.generateMipmap(gl.TEXTURE_2D);
+
+    // normals
+    const normalsBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalsBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, model.normalsFloatArray, gl.DYNAMIC_DRAW);
+    const normalsAttr = program_info.attribLocations.normals;
+    gl.vertexAttribPointer(normalsAttr, 3, gl.FLOAT, true, 0, 0);
+    gl.enableVertexAttribArray(normalsAttr);
+
+    const vertexIndicesBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indicesIntArray, gl.DYNAMIC_DRAW);
+
     gl.drawElements(gl.TRIANGLES, modelIndices.length, gl.UNSIGNED_SHORT, 0); // run frag shader for each vert
+    gl.deleteBuffer(normalsBuffer);
     gl.deleteBuffer(vertexIndicesBuffer);
     gl.deleteBuffer(textureCoordBuffer);
     gl.deleteBuffer(modelVertexesBuffer);

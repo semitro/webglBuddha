@@ -7,8 +7,10 @@ uniform mat4 uProjectionMatrix;
 uniform mat4 uModelMatrix;
 
 varying lowp vec2 vTexCoord;
+varying lowp vec3 vNormal;
 
 void main(void) {
   gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
   vTexCoord  = aTextureCoord;
+  vNormal = aVertexNormals;
 }

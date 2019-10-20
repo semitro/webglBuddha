@@ -86,6 +86,7 @@ class CubeModel {
     this.vTexturesFloatArray = new Float32Array(this.resultVTexture);
     this.indicesIntArray = new Uint16Array(this.resultIndices);
     this.vertexesFloatArray = new Float32Array(this.resultVertex);
+    this.normalsFloatArray = new Float32Array(converted.resultNormals);
   }
 }
 
