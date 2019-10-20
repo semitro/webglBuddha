@@ -13,6 +13,6 @@ varying lowp vec3 vWorldFragPos;
 void main(void) {
   gl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
   vWorldFragPos = vec3( uModelMatrix * aVertexPosition );
-  vNormal       = aVertexNormals;
+  vNormal       = mat3(uModelMatrix) * aVertexNormals;
   vTexCoord     = aTextureCoord;
 }
