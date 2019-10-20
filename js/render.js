@@ -4,6 +4,7 @@
  * @see deploy.sh
  * Don't forget that there shouldn't be spaces before #include macro
  */
+ 'use strict';
 const vertex_shader = `
 #include "../shaders/vertex.vt"
 `;
@@ -84,7 +85,7 @@ class Renderer {
     // set up vertexes positions in space
     const modelVertexesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexesBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelVertexes), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, model.vertexesFloatArray, gl.STATIC_DRAW);
 
     const vertexPosAttr = program_info.attribLocations.vertexPos;
     gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexesBuffer);
@@ -94,7 +95,7 @@ class Renderer {
     // set up texture coordinates
     const textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelVTextures), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, model.vTexturesFloatArray, gl.STATIC_DRAW);
 
     const textureCoordAttr = program_info.attribLocations.textureCoord;
     gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
@@ -103,16 +104,18 @@ class Renderer {
 
     const vertexIndicesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelIndices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indicesIntArray, gl.STATIC_DRAW);
 
     // texture itself
     const texture = gl.createTexture();
-    //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-     // new Uint8Array([0, 0, 255, 255]));
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, model.image);
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.drawElements(gl.TRIANGLES, modelIndices.length, gl.UNSIGNED_SHORT, 0); // run frag shader for each vert
+    gl.deleteBuffer(vertexIndicesBuffer);
+    gl.deleteBuffer(textureCoordBuffer);
+    gl.deleteBuffer(modelVertexesBuffer);
+    gl.deleteTexture(texture);
   }
 }
 

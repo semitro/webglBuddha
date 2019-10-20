@@ -1,6 +1,7 @@
 /**
 * Bulk of 3D-models used in our game
 **/
+'use strict';
 class Model {
 };
 
@@ -8,7 +9,7 @@ function convertToOneIndex(vertexes, indices, vt, vt_indices){
   const resultVertex   = [];
   const resultVTexture = [];
   const resultIndices  = [];
-  const reindexMap = new Map();
+  var reindexMap = new Map();
 
   var newIndex = 0;
   for( var i = 0; i < indices.length; i++) {
@@ -27,6 +28,7 @@ function convertToOneIndex(vertexes, indices, vt, vt_indices){
     else
       resultIndices.push(element);
   }
+  reindexMap = null
   return {resultIndices, resultVertex, resultVTexture};
 }
 
@@ -48,17 +50,17 @@ class CubeModel {
   constructor(){
     this.modelMatrix = mat4.create();
     mat4.translate(this.modelMatrix, this.modelMatrix, [10., 0., 0.]);
-    this.vertexes = [
+    const vertexes = [
 #include "../models/cube.obj.vertexes_array"
     ];
-    this.indices = [
+    const indices = [
 #include "../models/cube.obj.indices_vertexes_array"
     ];
 
-    this.vt = [
+    const vt = [
 #include "../models/cube.obj.vtextures_array"
     ];
-    this.vt_indices = [
+    const vt_indices = [
 #include "../models/cube.obj.indices_vtextures_array"
   ];
 
@@ -70,42 +72,48 @@ class CubeModel {
     });
     this.image = image;
 
-    const converted = convertToOneIndex(this.vertexes, this.indices, this.vt, this.vt_indices);
+    const converted = convertToOneIndex(vertexes, indices, vt, vt_indices);
     this.resultIndices  = converted.resultIndices;
     this.resultVertex   = converted.resultVertex;
     this.resultVTexture = converted.resultVTexture;
+
+    this.vTexturesFloatArray = new Float32Array(this.resultVTexture);
+    this.indicesIntArray = new Uint16Array(this.resultIndices);
+    this.vertexesFloatArray = new Float32Array(this.resultVertex);
   }
 }
 
 class Penguin{
   constructor(){
+    console.log("Penguin Constructor");
     this.modelMatrix = mat4.create();
     mat4.translate(this.modelMatrix, this.modelMatrix, [1., -5., 0.]);
     mat4.scale(this.modelMatrix, this.modelMatrix, [7., 7., 7.]);
-    this.vertexes = [
+    const vertexes = [
 #include "../models/penguin.obj.vertexes_array"
   ];
-    this.indices = [
+    const indices = [
 #include "../models/penguin.obj.indices_vertexes_array"
   ];
-    this.vt = [
+    const vt = [
 #include "../models/penguin.obj.vtextures_array"
   ];
-    this.vt_indices = [
+    const vt_indices = [
 #include "../models/penguin.obj.indices_vtextures_array"
   ];
 
     const image = new Image();
     image.src = "../textures/penguin.png";
 
-    image.addEventListener('load', function () {
-      console.log("img loaded");
-    });
     this.image = image;
 
-    const converted = convertToOneIndex(this.vertexes, this.indices, this.vt, this.vt_indices);
+    const converted = convertToOneIndex(vertexes, indices, vt, vt_indices);
     this.resultIndices  = converted.resultIndices;
     this.resultVertex   = converted.resultVertex;
     this.resultVTexture = converted.resultVTexture;
+
+    this.vTexturesFloatArray = new Float32Array(this.resultVTexture);
+    this.indicesIntArray = new Uint16Array(this.resultIndices);
+    this.vertexesFloatArray = new Float32Array(this.resultVertex);
   }
 }

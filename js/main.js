@@ -1,19 +1,20 @@
+
 function main() {
 
-  const r = new Renderer();
-  const carModel = new CarModel();
-  const cubeModel = new CubeModel();
-  const penguinModel = new Penguin();
-  const phys = new PhysEngine();
+    const r = new Renderer();
+    const carModel = new CarModel();
+    const cubeModel = new CubeModel();
+    const penguinModel = new Penguin();
+    const phys = new PhysEngine();
   phys.register(carModel, ProcessAs.GRAVITY);
 
   var last_timestamp = Date.now();
   var deltaTime;
-  window.addEventListener("keypress", keyPressed);
+  //window.addEventListener("keypress", keyPressed);
 
-  function keyPressed(e) {
-    console.log(e);
-  };
+ // function keyPressed(e) {
+  //  console.log(e);
+  //};
 
 
   function mainLoop() {
@@ -23,12 +24,13 @@ function main() {
 
     r.clear_frame();
  //   r.render(carModel);
+    console.timeStamp("Render begins");
     r.render(penguinModel);
+    console.timeStamp("Render ends");
     r.render(cubeModel);
 
     window.requestAnimationFrame(mainLoop);
-  }
-
+    }
   window.requestAnimationFrame(mainLoop);
 }
 
