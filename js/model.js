@@ -15,24 +15,24 @@ function convertToOneIndex(vertexes, indices, vt, vt_indices, normals, normals_i
   var newIndex = 0;
   for( var i = 0; i < indices.length; i++) {
     const key = vt_indices[i].toString() + indices[i].toString() + normals_indices[i].toString();
-    const element = reindexMap.get(key);
-    if(element === undefined){
+    const element_num = reindexMap.get(key);
+    if(element_num === undefined){
       reindexMap.set(key, newIndex);
       resultIndices.push(newIndex);
+      newIndex++;
       resultVertex.push(vertexes[indices[i]*3]);
       resultVertex.push(vertexes[indices[i]*3 + 1]);
       resultVertex.push(vertexes[indices[i]*3 + 2]);
       resultVTexture.push(vt[vt_indices[i]*2]);
       resultVTexture.push(vt[vt_indices[i]*2 + 1]);
-      resultNormals.push(normals[normals_indices[i]]*3);
-      resultNormals.push(normals[normals_indices[i]]*3 + 1);
-      resultNormals.push(normals[normals_indices[i]]*3 + 2);
-      newIndex++;
+      resultNormals.push(normals[normals_indices[i]*3 ]);
+      resultNormals.push(normals[normals_indices[i]*3 + 1]);
+      resultNormals.push(normals[normals_indices[i]*3 + 2]);
     }
     else
-      resultIndices.push(element);
+      resultIndices.push(element_num);
   }
-  reindexMap = null
+  reindexMap = null;
   return {resultIndices, resultVertex, resultVTexture, resultNormals};
 }
 

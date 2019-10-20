@@ -70,7 +70,7 @@ class Renderer {
 
     const viewMatrix = mat4.create();
 
-    mat4.translate(viewMatrix, viewMatrix, [0, 0, -20.0]);
+    mat4.translate(viewMatrix, viewMatrix, [0, 0, -25.0]);
 
     const modelMatrixUniform = program_info.uniformLocations.modelMatrix;
     const viewMatrixUniform = program_info.uniformLocations.viewMatrix;

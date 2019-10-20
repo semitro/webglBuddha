@@ -1,13 +1,14 @@
 varying lowp vec2 vTexCoord;
 varying lowp vec3 vNormal;
+varying lowp vec3 vWorldFragPos;
 
 uniform sampler2D uTexture;
 
 void main() {
- lowp vec4 ambient =  vec4(0.2, 0.2, 0.2, 1.0);
- lowp vec4 texture_color = texture2D(uTexture, vTexCoord); // dunno that the lowp is but nothing works without it
-// gl_FragColor = max(texture_color*ambient, vec4(vNormal, 1.0)*texture_color);
-// gl_FragColor = texture_color*ambient + vec4(vNormal, 1.0);
-  lowp float r_n = abs(vNormal.r);
-  gl_FragColor = vec4(r_n, 1.0, 1.0, 1.0);
+  lowp vec3 lightPos = vec3(10, 10., 25);
+  lowp vec4 ambient =  vec4(0.5, 0.5, 0.5, 1.0);
+  lowp vec4 texture_color = texture2D(uTexture, vTexCoord); // dunno that the lowp is but nothing works without it
+  lowp vec3 lightReverseDir = normalize(vWorldFragPos - lightPos);
+  gl_FragColor = vec4(vec3(dot(lightReverseDir, vNormal)), 1.0);//*texture_color;// + ambient*texture_color;
+  gl_FragColor = vec4(normalize(vNormal), 1.0);
 }
