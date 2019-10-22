@@ -90,6 +90,48 @@ class CubeModel {
   }
 }
 
+class StatueModel {
+  constructor(){
+    this.modelMatrix = mat4.create();
+    mat4.translate(this.modelMatrix, this.modelMatrix, [-5., -1., 0.]);
+    mat4.scale(this.modelMatrix, this.modelMatrix, [25., 25. , 25.]);
+    const vertexes = [
+#include "../models/statue.obj.vertexes_array"
+  ];
+    const indices = [
+#include "../models/statue.obj.indices_vertexes_array"
+  ];
+    const vt = [
+#include "../models/statue.obj.vtextures_array"
+  ];
+    const vt_indices = [
+#include "../models/statue.obj.indices_vtextures_array"
+  ];
+    const file_normals = [
+#include "../models/statue.obj.normals_array"
+  ];
+    const file_normals_indices = [
+#include "../models/statue.obj.indices_normals_array"
+  ];
+
+    const image = new Image();
+    image.src = "../textures/statue.jpg";
+
+    this.image = image;
+
+    const converted = convertToOneIndex(vertexes, indices, vt, vt_indices, file_normals, file_normals_indices);
+    this.resultIndices  = converted.resultIndices;
+    this.resultVertex   = converted.resultVertex;
+    this.resultVTexture = converted.resultVTexture;
+
+    this.vTexturesFloatArray = new Float32Array(this.resultVTexture);
+    this.indicesIntArray = new Uint16Array(this.resultIndices);
+    this.vertexesFloatArray = new Float32Array(this.resultVertex);
+    this.normalsFloatArray = new Float32Array(converted.resultNormals);
+  }
+}
+
+
 class Penguin{
   constructor(){
     this.modelMatrix = mat4.create();
