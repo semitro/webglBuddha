@@ -53,7 +53,6 @@ class CarModel{
 class CubeModel {
   constructor(){
     this.modelMatrix = mat4.create();
-    mat4.translate(this.modelMatrix, this.modelMatrix, [10., 0., 0.]);
     const vertexes = [
 #include "../models/cube.obj.vertexes_array"
     ];
@@ -93,7 +92,7 @@ class CubeModel {
 class StatueModel {
   constructor(){
     this.modelMatrix = mat4.create();
-    mat4.translate(this.modelMatrix, this.modelMatrix, [-5., -1., 0.]);
+    mat4.translate(this.modelMatrix, this.modelMatrix, [0., -5., 0.]);
     mat4.scale(this.modelMatrix, this.modelMatrix, [25., 25. , 25.]);
     const vertexes = [
 #include "../models/statue.obj.vertexes_array"

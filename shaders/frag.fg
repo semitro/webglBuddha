@@ -7,7 +7,7 @@ uniform sampler2D uTexture;
 void main() {
   lowp vec3 lightPos = vec3(10, 10., -2);
   lowp vec4 ambient =  vec4(0.05, 0.05, 0.05, 1.0);
-  lowp vec4 texture_color = texture2D(uTexture, vTexCoord); // dunno that the lowp is but nothing works without it
+  lowp vec4 texture_color = texture2D(uTexture, vTexCoord.yx); // dunno that the lowp is but nothing works without it
   lowp vec3 lightReverseDir = normalize(vWorldFragPos - lightPos);
   lowp vec4 diffuse = vec4(vec3(dot(lightReverseDir, vNormal)), 1.0);
   gl_FragColor = max(diffuse, ambient)*texture_color;

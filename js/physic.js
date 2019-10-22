@@ -12,7 +12,9 @@ const g = 0.1;
  * @param GRAVITY - use gravitation force on the object that is being registered
  ***/
 const ProcessAs = {
-  GRAVITY: 1
+  GRAVITY: 1,
+  CUBE : 2,
+  BUDDHA: 3
 };
 
 /**
@@ -32,7 +34,8 @@ class PhysEngine {
     this.actorList.push({
       model: actor,
       as: as,
-      speed: [0, 0, 0]
+      speed: [0, 0, 0],
+      rotSpeed: [5*Math.random(), 5*Math.random(), 5*Math.random()]
     });
   }
 
@@ -52,8 +55,22 @@ class PhysEngine {
     if (actor.as === ProcessAs.GRAVITY) {
       actor.speed[1] -= g * dt;
     }
-    mat4.rotateX(actor.model.modelMatrix, actor.model.modelMatrix, 1.0*dt);
-    mat4.rotateY(actor.model.modelMatrix, actor.model.modelMatrix, -2.*dt);
+    if(actor.as === ProcessAs.CUBE){
+      mat4.rotateX(actor.model.modelMatrix, actor.model.modelMatrix, actor.rotSpeed[0]*dt);
+      mat4.rotateY(actor.model.modelMatrix, actor.model.modelMatrix, actor.rotSpeed[1]*dt);
+      mat4.rotateZ(actor.model.modelMatrix, actor.model.modelMatrix, actor.rotSpeed[2]*dt);
+      if(Math.random() < 0.05)
+        actor.rotSpeed = [15*Math.random(), 15*Math.random(), 15*Math.random()];
+    }
+    if(actor.as === ProcessAs.BUDDHA){
+      mat4.rotateY(actor.model.modelMatrix, actor.model.modelMatrix, actor.rotSpeed[1]*0.1*dt);
+      mat4.rotateX(actor.model.modelMatrix, actor.model.modelMatrix, actor.rotSpeed[0]*0.01*dt);
+      mat4.rotateZ(actor.model.modelMatrix, actor.model.modelMatrix, actor.rotSpeed[2]*0.025*dt);
+      if(Math.random() < 0.01){
+        const reverseIndex = parseInt(Math.random()*2.9999);
+          actor.rotSpeed[reverseIndex] = -actor.rotSpeed[reverseIndex]*Math.random()*3;
+      }
+    }
     var actorPos = actor.model.modelMatrix;
     mat4.translate(actorPos, actorPos, actor.speed);
   }

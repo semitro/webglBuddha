@@ -41,11 +41,21 @@ class Renderer {
     };
   }
 
-  constructor() {
+  constructor(camera) {
     this.program_info = this.init_gl(vertex_shader, frag_shader);
+    this.viewMatrix = camera;
+
     const gl = this.program_info.gl;
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL); // obucre far things
+
+    const fieldOfView = 45 * Math.PI / 180;
+    const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+    const zNear = 0.01;
+    const zFar = 1000.0;
+    this.projectionMatrix = mat4.create();
+    mat4.perspective(this.projectionMatrix, fieldOfView, aspect, zNear, zFar);
+
   }
 
   clear_frame() {
@@ -55,32 +65,19 @@ class Renderer {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   }
 
-  render(model) {
 
+  render(model) {
     const program_info = this.program_info;
     const gl = program_info.gl;
-
-    // calculate matrixes
-    const fieldOfView = 45 * Math.PI / 180;
-    const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-    const zNear = 0.01;
-    const zFar = 1000.0;
-    const projectionMatrix = mat4.create();
-    mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
-
-    const viewMatrix = mat4.create();
-
-    mat4.translate(viewMatrix, viewMatrix, [0, 0, -25.0]);
 
     const modelMatrixUniform = program_info.uniformLocations.modelMatrix;
     const viewMatrixUniform = program_info.uniformLocations.viewMatrix;
     const projectionMatrixUniform = program_info.uniformLocations.projectionMatrix;
     gl.uniformMatrix4fv(modelMatrixUniform, false, model.modelMatrix);
-    gl.uniformMatrix4fv(viewMatrixUniform, false, viewMatrix);
-    gl.uniformMatrix4fv(projectionMatrixUniform, false, projectionMatrix);
+    gl.uniformMatrix4fv(viewMatrixUniform, false, this.viewMatrix);
+    gl.uniformMatrix4fv(projectionMatrixUniform, false, this.projectionMatrix);
 
     const modelIndices = model.resultIndices;
-
     // set up vertexes positions in space
     const modelVertexesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexesBuffer);
