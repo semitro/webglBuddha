@@ -166,9 +166,11 @@ class Penguin{
 }
 
 class EyeModel{
- constructor(){
+  constructor(){
     this.modelMatrix = mat4.create();
-    mat4.translate(this.modelMatrix, this.modelMatrix, [1., -5., 0.]);
+    mat4.translate(this.modelMatrix, this.modelMatrix, [0., -5., 0.]);
+    mat4.scale(this.modelMatrix, this.modelMatrix, [75., 75. , 75.]);
+    //mat4.rotateX(this.modelMatrix, this.modelMatrix, 3.14);
     const vertexes = [
 #include "../models/eye.obj.vertexes_array"
   ];
@@ -181,13 +183,19 @@ class EyeModel{
     const vt_indices = [
 #include "../models/eye.obj.indices_vtextures_array"
   ];
+    const file_normals = [
+#include "../models/eye.obj.normals_array"
+  ];
+    const file_normals_indices = [
+#include "../models/eye.obj.indices_normals_array"
+  ];
 
     const image = new Image();
     image.src = "../textures/Eye_D.jpg";
 
     this.image = image;
 
-    const converted = convertToOneIndex(vertexes, indices, vt, vt_indices);
+    const converted = convertToOneIndex(vertexes, indices, vt, vt_indices, file_normals, file_normals_indices);
     this.resultIndices  = converted.resultIndices;
     this.resultVertex   = converted.resultVertex;
     this.resultVTexture = converted.resultVTexture;
@@ -195,6 +203,6 @@ class EyeModel{
     this.vTexturesFloatArray = new Float32Array(this.resultVTexture);
     this.indicesIntArray = new Uint16Array(this.resultIndices);
     this.vertexesFloatArray = new Float32Array(this.resultVertex);
+    this.normalsFloatArray = new Float32Array(converted.resultNormals);
   }
-
 }

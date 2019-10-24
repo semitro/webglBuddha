@@ -60,7 +60,7 @@ class Renderer {
 
   clear_frame() {
     const gl = this.program_info.gl;
-    gl.clearColor(0., 0., 0., 0.05);
+    gl.clearColor(0., 0., 0., 0.00);
     gl.clearDepth(1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   }
@@ -101,6 +101,7 @@ class Renderer {
     // texture itself
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, model.image);
     gl.generateMipmap(gl.TEXTURE_2D);
 

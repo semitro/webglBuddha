@@ -14,5 +14,6 @@ void main(void) {
   gl_Position   = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
   vWorldFragPos = vec3( uModelMatrix * aVertexPosition );
   vNormal       = mat3(uModelMatrix) * aVertexNormals;
+
   vTexCoord     = aTextureCoord;
 }
