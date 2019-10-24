@@ -52,10 +52,10 @@ class PhysEngine {
   }
 
   jumpIt(actor) {
-    this.actorList.forEach(registered=>{
-      if(actor === registered.model){
-          registered.acceleration[1] = -1500.05;
-          registered.speed[1] = 200;
+    this.actorList.forEach(registered => {
+      if (actor === registered.model) {
+        registered.acceleration[1] = -1500.05;
+        registered.speed[1] = 200;
       }
     })
   }
@@ -88,17 +88,17 @@ class PhysEngine {
           actor.rotSpeed[reverseIndex] = -actor.rotSpeed[reverseIndex] * Math.random() * 3;
         }
       }
-      if (style === ProcessAs.EYE){
-        mat4.rotateZ(actor.model.modelMatrix, actor.model.modelMatrix, 7.7*dt);
+      if (style === ProcessAs.EYE) {
+        mat4.rotateZ(actor.model.modelMatrix, actor.model.modelMatrix, 7.7 * dt);
         // mat4.rotateY(actor.model.modelMatrix, actor.model.modelMatrix, 3.14);
       }
 
 
       var currentTransform = actor.model.modelMatrix;
-      actor.speed[0] += actor.acceleration[0]*dt;
-      actor.speed[1] += actor.acceleration[1]*dt;
-      actor.speed[2] += actor.acceleration[2]*dt;
-      const actorTranslation = [actor.speed[0]*dt, actor.speed[1]*dt, actor.speed[2]*dt];
+      actor.speed[0] += actor.acceleration[0] * dt;
+      actor.speed[1] += actor.acceleration[1] * dt;
+      actor.speed[2] += actor.acceleration[2] * dt;
+      const actorTranslation = [actor.speed[0] * dt, actor.speed[1] * dt, actor.speed[2] * dt];
       mat4.translate(currentTransform, currentTransform, actorTranslation);
     });
   }

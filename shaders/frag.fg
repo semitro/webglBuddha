@@ -4,10 +4,6 @@ varying lowp vec3 vWorldFragPos;
 varying lowp vec3 lightPos;
 uniform sampler2D uTexture;
 
-//uniform lowp ve3 ULight1Pos;
-//uniform lowp ve3 ULight2Pos;
-
-
 void main() {
   lowp vec3 lightPos = vec3(0, -10., -20.);
   lowp vec4 lightColor = vec4(1.0, 1.0, 0.7, 1.0);
