@@ -42,10 +42,18 @@ function main() {
 
     r.clear_frame();
     console.timeStamp("Render begins");
-    r.render(cubeRight);
-    r.render(cubeLeft);
-    r.render(statueModel);
-    r.render(eyeModel);
+    r.prepare_shadow_map(cubeRight);
+
+    r.prepare_shadow_map(statueModel);
+    r.prepare_shadow_map(eyeModel);
+
+    r.clear_frame();
+    //r.render(cubeRight);
+   // r.render(cubeLeft);
+  //  r.render(statueModel);
+   // r.render(eyeModel);
+
+
     console.timeStamp("Render ends");
 
     window.requestAnimationFrame(mainLoop);

@@ -1,0 +1,8 @@
+attribute vec4 aVertexPosition;
+
+uniform mat4 uModelMatrixSh;
+uniform mat4 uLightPosition;
+
+void main(void) {
+  gl_Position   =  uLightPosition * uModelMatrixSh * aVertexPosition;
+}
